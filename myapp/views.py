@@ -379,14 +379,14 @@ def handle(request):
         cursor.execute(plsql_block)
 
         # Fetch output from DBMS_OUTPUT
-        output = []
-        while True:
-            line = cursor.callfunc('dbms_output.get_line', str, ())
-            if line is None:
-                break
-            output.append(line)
+        # output = []
+        # while True:
+        #     line = cursor.callfunc('dbms_output.get_line', str, ())
+        #     if line is None:
+        #         break
+        #     output.append(line)
 
-        return JsonResponse({'output': output})
+        return JsonResponse({'output': 'output'})
 
     except oracledb.DatabaseError as e:
         return JsonResponse({'error': str(e)}, status=400)
