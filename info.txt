@@ -1,0 +1,22 @@
+1 marks   - Sequences
+a.    Create at least one sequence 
+b.    Use it to insert sample data
+c.    Use it to update table(s)
+0.5 marks  - Indexes
+a.    Search is one of common functionalities, index plays a critical role in search
+b.    create few (min 2) indexes for those tables where search is performed frequently 
+2 marks - Triggers
+For behind the scenes table entry/updating, you need to create at least 2 triggers.
+2 marks - Procedures
+You need to define at least two procedures so carrying out common operations on database. Include exception section, using cursors.
+1 marks - Functions
+You need to define at least two functions so carrying out common operations on database. Include exception section.
+1.5 marks – Packages 
+a.    Use at least two procedures (could be previously created ones) 
+b.    Use at least two functions (could be previously created ones)
+c.    Include global and private variables / constructs. 
+d.    Use TYPE attribute and/or ROWTYPE attribute whenever it is appropriate 
+3. Create  scripts to run samples of your functions, procedures and triggers, packages, etc.
+Front end marking upon presentation.
+
+@Diego Armando Sarmiento If possbile can you send me the code for this, I will try to include in docs to make it more better and understandable
