@@ -2,7 +2,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import oracledb
 
-@csrf_exempt
+# @csrf_exempt
 # def createTables(request):
 #     if request.method == 'GET':
 #         try:
@@ -326,41 +326,28 @@ import oracledb
 #     return JsonResponse({'error': 'Invalid request method.'}, status=405)
 
 def createTables(request):
-        connection = oracledb.connect(
-                user='COMP214_M24_zo_107',
-                password='password',
-                dsn='199.212.26.208:1521/SQLD'
-        )
-        cursor = connection.cursor()
+    connection = oracledb.connect(
+        user='COMP214_M24_zo_107',
+        password='password',
+        dsn='199.212.26.208:1521/SQLD'
+    )
+    cursor = connection.cursor()
 
-        plsql_block = """
-        DECLARE
-            v_inventory_level NUMBER;
+    plsql_block = """
+    BEGIN
+        sp_update_inventory(5, 100, 'Warehouse B');
+    END;
+    """
 
-        prod_id NUMBER := 5;
-
-        BEGIN
-            v_inventory_level := fn_get_product_inventory(prod_id);
-
-            DBMS_OUTPUT.PUT_LINE(
-                'Inventory : ' || v_inventory_level || ' for product id=' || prod_id
-            );
-
-        END;
-        """
-
-        try:
-            cursor.execute("BEGIN dbms_output.enable(); END;")  # Enable DBMS_OUTPUT for the session
-            cursor.execute(plsql_block)
-            
-            # Fetch the output
-            result = cursor.callfunc('dbms_output.get_line', str, (True,))
-            return JsonResponse(f'Result: {result}')
-        except oracledb.DatabaseError as e:
-            return JsonResponse({'error': str(e)}, status=400)
-        finally:
-            cursor.close()
-            connection.close()
+    try:
+        # Execute the PL/SQL block
+        cursor.execute(plsql_block)
+        return JsonResponse({'message': 'Stored procedure sp_update_inventory executed successfully.'})
+    except oracledb.DatabaseError as e:
+        return JsonResponse({'error': str(e)}, status=400)
+    finally:
+        cursor.close()
+        connection.close()
 
 
 def handle(request):
@@ -372,12 +359,38 @@ def handle(request):
     cursor = connection.cursor()
 
     try:
-        # Execute the stored procedure
-        cursor.callproc('sp_update_inventory', [5, 100, 'Warehouse B'])
-        return JsonResponse({'message': 'Stored procedure sp_update_inventory executed successfully.'})
+        # Enable DBMS_OUTPUT
+        cursor.callproc('dbms_output.enable')
+
+        # PL/SQL block to execute
+        plsql_block = """
+        DECLARE
+            v_inventory_level NUMBER;
+            prod_id NUMBER := 5;
+        BEGIN
+            v_inventory_level := fn_get_product_inventory(prod_id);
+            dbms_output.put_line(
+                'Inventory : ' || v_inventory_level || ' for product id=' || prod_id
+            );
+        END;
+        """
+
+        # Execute the PL/SQL block
+        cursor.execute(plsql_block)
+
+        # Fetch output from DBMS_OUTPUT
+        output = []
+        while True:
+            line = cursor.callfunc('dbms_output.get_line', str, ())
+            if line is None:
+                break
+            output.append(line)
+
+        return JsonResponse({'output': output})
+
     except oracledb.DatabaseError as e:
         return JsonResponse({'error': str(e)}, status=400)
+
     finally:
         cursor.close()
         connection.close()
-
