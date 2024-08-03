@@ -3,5 +3,5 @@ from . import views
 
 urlpatterns = [
     path('createtables/', views.createTables)
-    # ,path('executetriggers/',views.execute_triggers)
+    ,path('handle/',views.handle)
 ]
