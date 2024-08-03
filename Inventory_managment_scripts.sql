@@ -1,4 +1,3 @@
--- Create tables
 
 CREATE TABLE pj_customers(
     customerId INT NOT NULL,
@@ -242,6 +241,7 @@ VALUES (301400662, 'sneupa23@my.centennialcollege.ca', 'password', 'Warehouse Su
 INSERT INTO pj_users (userId, email, password, role)
 VALUES (301284284, 'upoudel1@my.centennialcollege.ca', 'password', 'Buyer');
 
+-- Triggers
 
 CREATE OR REPLACE TRIGGER trg_update_inventory
 AFTER INSERT ON pj_order_details
